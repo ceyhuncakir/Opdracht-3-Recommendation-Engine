@@ -1,5 +1,8 @@
 # Opdracht Recommendation-Engine
-Git voor het opdracht Business rules voor Recommendation Engine.
+Git voor het opdracht Business rules voor Recommendation Engine. 
+Op het moment werk de recommendation op een profiel aangezien het best lang kan duren voordat elke recommendation gemaakt kan worden
+
+De profiel: 5a3e2f8ba82561000176c70a
 
 # Leden
 Ceyhun Cakir | 1784480
@@ -28,4 +31,4 @@ stap 5: Uiteindelijk returnen we 4 random producten binnen het lijst met de prof
 ```
 
 # Versie
-Versie 1.0.0 | 18-3-2021
+Versie 1.0.1 | 18-3-2021
