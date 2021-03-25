@@ -51,6 +51,17 @@ def delete_tables(database, cursor):
     cursor.execute("DROP TABLE content_filtering")
     cursor.execute("DROP TABLE collaborative_filtering")
 
+def retrieve_order_profiles(cursor):
+    """
+    Return all profiles with orders.
+    :param cursor:
+    :return:
+    """
+    cursor.execute("SELECT DISTINCT sessions.profiles_id_key FROM orders, sessions WHERE sessions.id = orders.sessions_id_key")
+    profiles_orders = cursor.fetchall()
+
+    return profiles_orders
+
 def get_profiles_content(cursor, profileid):
     """
     functie voor het krijgen van profiel_data
@@ -72,20 +83,21 @@ def get_content_recommendation(cursor, profileid):
     """
 
     prodids = []
+    sim_prod_list = []
 
     # functie voor het ophalen van data voor de huidige profiel waar de recommendation moet gebeuren
     profile_data = get_profiles_content(cursor, profileid)
 
     # for loop voor vergelijkbaren producten
     for i in profile_data:
-        cursor.execute("SELECT `id`, `main_category_id_key`, `gender_id_key`, `doelgroep_id_key` FROM `products` WHERE main_category_id_key = '{0}' AND gender_id_key = '{1}' AND doelgroep_id_key = '{2}'".format(i[4], i[6], i[7]))
+        cursor.execute("SELECT `id`, `main_category_id_key`, `gender_id_key`, `doelgroep_id_key` FROM `products` WHERE main_category_id_key = '{0}'".format(i[4]))
         sim_prod = cursor.fetchall()
 
     # for loop voor het inzetten van vergelijkbaren producten
-    for i in sim_prod:
-        prodids.append(i[0])
+    for k, v in enumerate(sim_prod):
+        prodids.append(v[0])
 
-    print(colored("\n\t" + "Content_filtering Done", "green"))
+    print(colored("\n\t" + "content filtering Done", "green"), colored("\t" + "profiel:" + profileid, "yellow"))
 
     return profileid, random.sample(prodids, 4)
 
@@ -103,14 +115,18 @@ def get_collaborative_recommendation(cursor, profileid):
     # functie voor het ophalen van data voor de huidige profiel waar de recommendation moet gebeuren
     profile_data = get_profiles_content(cursor, profileid)
 
+    sim_prod_list = []
+
     # for loop voor vergelijkbaren profielen met de zelfde main_category, brand, doelgroep
     for i in profile_data:
         cursor.execute("SELECT products.id, products.main_category_id_key, products.gender_id_key, products.doelgroep_id_key, sessions.profiles_id_key FROM `products`, `orders`, `sessions`, `profiles` WHERE orders.products_id_key = products.id AND orders.sessions_id_key = sessions.id AND sessions.profiles_id_key = profiles.id AND main_category_id_key = '{0}' AND gender_id_key = '{1}' AND doelgroep_id_key = '{2}'".format(i[4], i[6], i[7]))
         sim_prod = cursor.fetchall()
+        sim_prod_list.append(sim_prod)
 
     # for loop voor de profielen met de zelfde gekochte items binnen de categorien main_category, brand, doelgrpe
-    for i in sim_prod:
-        profileids.append(i[4])
+    for i in sim_prod_list:
+        profileids.append(i[0][4])
+
 
     # sql execute voor een random profiel
     cursor.execute("SELECT products.id, products.price, products.stock, orders.aantal, main_category.id, brand.brand, gender.id, doelgroep.id, orders.sessions_id_key, sessions.profiles_id_key FROM `products`, `gender`, `brand`, `main_category`, `orders`, `sessions`, `doelgroep` WHERE products.gender_id_key = gender.id AND products.brand_id_key = brand.id AND products.main_category_id_key = main_category.id AND orders.products_id_key = products.id AND orders.sessions_id_key = sessions.id AND products.doelgroep_id_key = doelgroep.id AND profiles_id_key = '%s'" % ''.join(random.sample(profileids, 1)))
@@ -136,7 +152,7 @@ def insert_values(direction, profile, list_value, db, cursor, table, *column):
         category_list_sql = "INSERT IGNORE INTO " + table + " (" + column[0] + ", " + column[1] + ", " + column[2] + ", " + column[3] + ", " + column[4] +") VALUES (%s, %s, %s, %s, %s)"
         category_list_sql_value = (str(profile), str(list_value[0]), str(list_value[1]), str(list_value[2]), str(list_value[3]))
         cursor.execute(category_list_sql, category_list_sql_value)
-        db.commit()
+    db.commit()
 
 def recommendation_engine(mysql_username, mysql_password, mysql_database):
     """
@@ -152,14 +168,21 @@ def recommendation_engine(mysql_username, mysql_password, mysql_database):
     delete_tables(mysql_database, cursor)
     create_tables(mysql_database, cursor)
 
-    cursor.execute("SELECT `profiles_id_key` FROM `sessions`")
-    profiles = cursor.fetchall()
+    profiles = retrieve_order_profiles(cursor)
 
-    profile_collab, recommendation_collab = get_collaborative_recommendation(cursor, '5a3e2f8ba82561000176c70a')
-    insert_values(0, profile_collab, recommendation_collab, db, cursor, "collaborative_filtering", "id", "product_1", "product_2", "product_3", "product_4")
+    #for i in profiles:
+        #profile_collab, recommendation_collab = get_collaborative_recommendation(cursor, i[0])
+        #insert_values(0, profile_collab, recommendation_collab, db, cursor, "collaborative_filtering", "id", "product_1", "product_2", "product_3", "product_4")
 
-    profile_content, recommendation_content = get_content_recommendation(cursor, '5a3e2f8ba82561000176c70a')
-    insert_values(0, profile_content, recommendation_content, db, cursor, "content_filtering", "id", "product_1", "product_2", "product_3", "product_4")
+    start = time.time()
+
+    for i in profiles:
+        profile_content, recommendation_content = get_content_recommendation(cursor, i[0])
+        insert_values(0, profile_content, recommendation_content, db, cursor, "content_filtering", "id", "product_1", "product_2", "product_3", "product_4")
+
+    end = time.time()
+
+    print("\n\tTotal time taken, " + str(round(end - start, 6)) + " seconds", "green")
 
     sql_closer(db, cursor)
 
