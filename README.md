@@ -30,5 +30,10 @@ stap 4: Random gekozen producten binnen de random gekozen profiel worden toegevo
 stap 5: Uiteindelijk returnen we 4 random producten binnen het lijst met de profileid
 ```
 
+# HUwebshop
+Zoals we zien werkt het op de Huwebshop door naar de volgende fotos te bekijken
+![](img/huwebshop-code.png)
+
+![](img/huwebshop-proof.png)
 # Versie
 Versie 1.0.1 | 18-3-2021
