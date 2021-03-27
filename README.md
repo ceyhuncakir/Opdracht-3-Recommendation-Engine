@@ -1,4 +1,4 @@
-# Recommendation Engine command
+# Recommendation Engine 
 Git for the Business rules of the Recommendation Engine.
 At the moment the recommendation works on a profile as it can take quite a while before each recommendation can be made
 
