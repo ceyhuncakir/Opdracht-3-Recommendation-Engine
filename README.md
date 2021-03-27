@@ -1,39 +1,39 @@
-# Opdracht Recommendation-Engine
-Git voor het opdracht Business rules voor Recommendation Engine. 
-Op het moment werk de recommendation op een profiel aangezien het best lang kan duren voordat elke recommendation gemaakt kan worden
+# Recommendation Engine command
+Git for the Business rules of the Recommendation Engine.
+At the moment the recommendation works on a profile as it can take quite a while before each recommendation can be made
 
-De profiel: 5a3e2f8ba82561000176c70a
+The profile: 5a3e2f8ba82561000176c70a
 
-# Leden
+# Project Members
 Ceyhun Cakir | 1784480
 
 # Content Recommendation
-Content recommendation word gemaakt gebasseerd op vergelijkbaren categorieen (main categorie, gender, doelgroep) van een product
+Content recommendation is made based on similar categories (main category, gender, target group) of a product
 
-De content recommendation bestaat uit de volgende stappen
+The content recommendation consists of the following steps
 ```
-stap 1: Krijg profiel data met de gekochte producten
-stap 2: Zoek naar vergelijkbaren producten gebaseerd op categorieen van het gekochte producten binnen de profiel
-stap 3: Voeg alle producten met de zelfde categorieen toe aan een lijst 
-stap 4: Uiteindelijk returnen we 4 random producten binnen het lijst met de profileid 
+step 1: Get profile data with the purchased products
+step 2: Search for similar products based on categories of the purchased products within the profile
+step 3: Add all products with the same categories to a list
+step 4: Finally we return 4 random products within the list with the profile ID
 ```
 
 # Collaborative Recommendation
-Collaborative recommendation word gemaakt gebasseerd op vergelijkbaren profielen die producten hebben gekocht met de vergelijkbaren categorieen (main categorie, gender, doelgroep)
+Collaborative recommendation is made based on similar profiles that have purchased products with the similar categories (main category, gender, target group)
 
-De collaborative recommendation bestaat uit de volgende stappen
+The collaborative recommendation consists of the following steps
 ```
-stap 1: Krijg profiel data met de gekochte producten
-stap 2: Zoek naar vergelijkbaren profielen gebaseerd op gekochte producten met de zelfde categorieen van het profiel waar we een recommendation willen maken
-stap 3: Random profiel word gekozen als een vergelijkbaren profiel
-stap 4: Random gekozen producten binnen de random gekozen profiel worden toegevoegd aan een lijst
-stap 5: Uiteindelijk returnen we 4 random producten binnen het lijst met de profileid
+step 1: Get profile data with the purchased products
+step 2: Search for similar profiles based on purchased products with the same categories of the profile where we want to make a recommendation
+step 3: Random profile is chosen as a comparable profile
+step 4: Randomly chosen products within the randomly chosen profile are added to a list
+step 5: Finally we return 4 random products within the list with the profile ID
 ```
 
 # HUwebshop
-Zoals we zien werkt het op de Huwebshop door naar de volgende fotos te bekijken
+As we can see it works on the Huwebshop by looking at the following pictures
 ![](img/huwebshop-code.png)
 
 ![](img/huwebshop-proof.png)
-# Versie
-Versie 1.0.1 | 18-3-2021
+# Version
+Versie 1.0.2 | 27-3-2021
